@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'ngaran',
-    'mfire',
-    'slack_event',
 ]
 
 MIDDLEWARE = [
