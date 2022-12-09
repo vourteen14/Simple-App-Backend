@@ -89,11 +89,11 @@ WSGI_APPLICATION = 'mengontil.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ngaran',
-        'USER': 'django',
-        'PASSWORD': 'Sumedang2002',
-        'HOST': '127.0.0.1',
-        'PORT': '',
+        'NAME': '[db_name]',
+        'USER': '[db_user]',
+        'PASSWORD': '[db_password]',
+        'HOST': '[db_host]',
+        'PORT': '[db_port]',
     }
 }
 
