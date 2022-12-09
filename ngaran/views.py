@@ -27,7 +27,7 @@ class NgaranViews(APIView):
       serializer = NgaranSerializer(items, many=True)
       return Response({"response": "ok", "result": serializer.data}, status=status.HTTP_200_OK)
     else:
-      return Response({"response": "fail", "result": "No result found"}, response=response.HTTP_404_NOT_FOUND)
+      return Response({"response": "fail", "result": "No result found"}, status=status.HTTP_404_NOT_FOUND)
 
   def patch(self, request, id=None):
     item = Ngaran.objects.get(id=id)
