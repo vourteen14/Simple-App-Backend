@@ -1,0 +1,3 @@
+dev.runserver.sh
+dev.makemigrations.sh
+dev.migrate.sh
