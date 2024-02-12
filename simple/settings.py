@@ -3,7 +3,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q=dn3pt1lkp*^!fkntp)@@#a07#b_+dr__rg8fb^2uvvit185_'
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ['10.1.0.10']
 INSTALLED_APPS = [
   'django.contrib.admin',
@@ -12,8 +12,11 @@ INSTALLED_APPS = [
   'django.contrib.sessions',
   'django.contrib.messages',
   'django.contrib.staticfiles',
+  'rest_framework',
   'simple_user',
   'simple_catalog',
+  'simple_todo',
+  'simple_note',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +60,12 @@ DATABASES = {
   }
 }
 
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES': [
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+  ],
+}
+
 AUTH_PASSWORD_VALIDATORS = [
   {
     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -74,12 +83,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'simple_user.CustomUser'
 
-DEFAULT_FILE_STORAGE = os.environ.get('DEFAULT_FILE_STORAGE')
-MINIO_STORAGE_ENDPOINT = os.environ.get('MINIO_STORAGE_ENDPOINT')
-MINIO_STORAGE_ACCESS_KEY = os.environ.get('MINIO_STORAGE_ACCESS_KEY')
-MINIO_STORAGE_SECRET_KEY = os.environ.get('MINIO_STORAGE_SECRET_KEY')
-MINIO_STORAGE_MEDIA_BUCKET_NAME = os.environ.get('MINIO_STORAGE_MEDIA_BUCKET_NAME')
-MINIO_STORAGE_STATIC_BUCKET_NAME = os.environ.get('MINIO_STORAGE_STATIC_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = os.environ.get('MINIO_STORAGE_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = os.environ.get('MINIO_STORAGE_SECRET_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('MINIO_STORAGE_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = os.environ.get('MINIO_STORAGE_ENDPOINT')
+AWS_S3_SECURE_URLS = False
+
+STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/static/"
+MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/"
+STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'simple_static'), ]
+
+STATICFILES_STORAGE = 'simple.storages.MinioStorageStatic'
+DEFAULT_FILE_STORAGE = 'simple.storages.MinioStorageMedia'
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'

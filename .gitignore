@@ -3,3 +3,4 @@ dev.makemigrations.sh
 dev.migrate.sh
 dev.showmigrations.sh
 dev.createsuperuser.sh
+dev.collectstatic.sh
