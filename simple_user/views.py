@@ -3,6 +3,33 @@ from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework.decorators import api_view
+from .serializers import CustomUserSerializer
+from .models import CustomUser
+
+@api_view(['POST'])
+def register_user(request):
+  if request.method == 'POST':
+    serializer = CustomUserSerializer(data=request.data)
+    if serializer.is_valid():
+      user = serializer.save()
+      activation_link = user.generate_activation_link()
+      serialized_data = serializer.data
+      serialized_data['activation_link'] = activation_link
+      return JsonResponse(serialized_data, status=201)
+    return JsonResponse(serializer.errors, status=400)
+
+@api_view(['GET'])
+def activate_user(request, activation_token):
+  try:
+    user = CustomUser.objects.get(activation_token=activation_token)
+    if user.is_activation_token_expired():
+      return JsonResponse({'result': 'Activation link has expired.'}, status=400)
+    else:
+      user.activate()
+      return JsonResponse({'result': 'Your account has been activated successfully.'}, status=200)
+  except CustomUser.DoesNotExist:
+    return JsonResponse({'result': 'Invalid activation link.'}, status=404)
+  return JsonResponse({'error': 'bad request'}, status=400)
 
 @api_view(['POST'])
 def generate_token(request):
