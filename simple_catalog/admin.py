@@ -1,4 +1,12 @@
 from django.contrib import admin
 from .models import Animal
 
-admin.site.register(Animal)
+class AnimalAdmin(admin.ModelAdmin):
+  list_display = ('name', 'owner')
+    
+  def owner(self, obj):
+    return obj.owner.email if obj.owner else None
+    
+  owner.short_description = 'Owner'
+
+admin.site.register(Animal, AnimalAdmin)

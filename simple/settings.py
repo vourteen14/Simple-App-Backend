@@ -1,9 +1,10 @@
 from pathlib import Path
+from datetime import timedelta
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q=dn3pt1lkp*^!fkntp)@@#a07#b_+dr__rg8fb^2uvvit185_'
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['10.1.0.10']
 INSTALLED_APPS = [
   'django.contrib.admin',
@@ -103,3 +104,10 @@ USE_L10N = True
 USE_TZ = True
 STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MONGO_URI = os.environ.get('MONGO_URI')
+
+SIMPLE_JWT = {
+  'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+  'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+}

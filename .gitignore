@@ -4,3 +4,6 @@ dev.migrate.sh
 dev.showmigrations.sh
 dev.createsuperuser.sh
 dev.collectstatic.sh
+dev.flush.sh
+dev.shell.sh
+dev.startservice.sh
