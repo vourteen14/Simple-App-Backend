@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Animal
 
 class AnimalAdmin(admin.ModelAdmin):
+  search_fields = ['name', 'species', 'breed', 'owner__email']
   list_display = ('name', 'owner')
     
   def owner(self, obj):
