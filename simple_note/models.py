@@ -7,12 +7,16 @@ CustomUser = get_user_model()
 class Tag(models.Model):
   name = models.CharField(max_length=50)
 
-class Attachment(models.Model):
-  file = models.FileField(upload_to=random_name, null=True)
+  def __str__(self):
+    return self.name
 
 class Contact(models.Model):
+  owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='contact')
   name = models.CharField(max_length=100)
   email = models.EmailField()
+
+  def __str__(self):
+    return self.name
 
 class Note(models.Model):
   title = models.CharField(max_length=255)
@@ -27,7 +31,6 @@ class Note(models.Model):
     ('shared', 'Shared'),
   )
   visibility = models.CharField(choices=visibility_choices, default='private', max_length=20)
-  attachments = models.ManyToManyField(Attachment)
   priority = models.IntegerField(default=0)
   related_contacts = models.ManyToManyField(Contact)
 
