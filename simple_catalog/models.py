@@ -1,18 +1,19 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from simple_catalog.utils import random_name
 
 CustomUser = get_user_model()
 
 class Animal(models.Model):
   name = models.CharField(max_length=100)
-  species_choices = [
+  species_choices = (
     ('Cat', 'Cat'),
     ('Dog', 'Dog'),
     ('Bird', 'Bird'),
     ('Fish', 'Fish'),
     ('Other', 'Other'),
-  ]
+  )
   species = models.CharField(max_length=50, choices=species_choices)
   breed = models.CharField(max_length=75)
   age = models.FloatField()
@@ -60,6 +61,7 @@ class Animal(models.Model):
     ('other', 'Other'),
   )
   intake_type = models.CharField(max_length=50, blank=True, choices=intake_status_choices, null=True)
+  image = models.ImageField(upload_to=random_name, blank=True, null=True)
 
   def save(self, *args, **kwargs):
     if not self.pk:

@@ -3,7 +3,7 @@ from .models import Animal
 
 class AnimalAdmin(admin.ModelAdmin):
   search_fields = ['name', 'species', 'breed', 'owner__email']
-  list_display = ('name', 'owner')
+  list_display = ('name', 'owner', 'health_status', 'adoption_status', 'intake_type')
     
   def owner(self, obj):
     return obj.owner.email if obj.owner else None

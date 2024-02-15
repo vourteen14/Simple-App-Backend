@@ -45,6 +45,10 @@ class AnimalApiView(View):
       token = None
       data = json.loads(request.body)
       user = get_user_from_token(get_token_from_request(request))
+      if image_data:
+        format, imgstr = image_data.split(';base64,') 
+        ext = format.split('/')[-1]
+        data['image'] = ContentFile(b64decode(imgstr), name=f'animal_image.{ext}')
       data['owner'] = user.data.pk
       serializer = AnimalSerializer(data=data)
       if serializer.is_valid():
