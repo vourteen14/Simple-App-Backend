@@ -32,7 +32,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser, PermissionsMixin):
   name = models.CharField(max_length=50)
   email = models.EmailField(unique=True)
-  image = models.ImageField(upload_to=random_name, blank=True, unique=True)
+  image = models.ImageField(upload_to=random_name, blank=True)
   whatsapp = models.CharField(max_length=15, blank=True)
   is_active = models.BooleanField(default=False)
   is_staff = models.BooleanField(default=False)
@@ -46,6 +46,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = ['name']
+
+  class Meta:
+    verbose_name = "User"
 
   def is_activation_token_expired(self):
     if self.activation_token_created_at:

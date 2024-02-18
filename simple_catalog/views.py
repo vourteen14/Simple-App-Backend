@@ -10,8 +10,35 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from simple_user.authorizations import get_user_from_token
 from simple_user.authorizations import get_token_from_request
 from simple_catalog.models import Animal
+from simple_catalog.models import Image
 from simple_catalog.serializers import AnimalSerializer
+from simple_catalog.serializers import ImageSerializer
 from simple_catalog.counters import AnimalCounter
+
+class ImageApiView(View):
+  @csrf_exempt
+  def dispatch(self, request, *args, **kwargs):
+    try:
+      user = JWTAuthentication().authenticate(request)
+      if user is None:
+        raise AuthenticationFailed('Invalid authentication credentials.')
+      return super().dispatch(request, *args, **kwargs)
+    except InvalidToken:
+      return JsonResponse({'status': 'error', 'code': 401, 'data': {'error': 'Invalid token'}}, status=401)
+    except AuthenticationFailed as e:
+      return JsonResponse({'status': 'error', 'code': 401, 'data': {'error': str(e)}}, status=401)
+
+  def post(self, request, *args, **kwargs):
+    try:
+      serializer = ImageSerializer(data=request.POST.copy())
+      user = get_user_from_token(get_token_from_request(request))
+      serializer.initial_data['owner'] = user.data.pk
+      if serializer.is_valid():
+        serializer.save()
+        return JsonResponse({'status': 'success', 'code': 201, 'data': [serializer.data]}, status=201)
+      return JsonResponse({'status': 'error', 'code': 400, 'data': serializer.errors}, status=400)
+    except json.JSONDecodeError:
+      return JsonResponse({'status': 'error', 'code': 400, 'data': {'error': 'Invalid JSON'}}, status=400)
 
 class AnimalApiView(View):
   @csrf_exempt
@@ -38,17 +65,22 @@ class AnimalApiView(View):
       user = get_user_from_token(get_token_from_request(request))
       animals = Animal.objects.filter(owner=user.data.pk)
       serializer = AnimalSerializer(animals, many=True)
-      return JsonResponse({'status': 'success', 'code': 200, 'data': serializer.data}, safe=False)
+      return JsonResponse({'status': 'success', 'code': 200, 'data': serializer.data}, status=200)
 
   def post(self, request, *args, **kwargs):
-    print(json.loads(request.data))
     try:
       serializer = AnimalSerializer(data=json.loads(request.body))
       user = get_user_from_token(get_token_from_request(request))
       serializer.initial_data['owner'] = user.data.pk
       if serializer.is_valid():
-        print(serializer)
         serializer.save()
+        if serializer.initial_data.get('images'):
+          for id in serializer.initial_data.get('images'):
+            image = Image.objects.filter(id=id)
+            image_serializer = ImageSerializer(data=image)
+            image_serializer.owner = serializer.data.get('id')
+            if image_serializer.is_valid():
+              image_serializer.save()
         counter = AnimalCounter()
         counter.increase_animal_count(user.data.pk)
         return JsonResponse({'status': 'success', 'code': 201, 'data': [serializer.data]}, status=201)
