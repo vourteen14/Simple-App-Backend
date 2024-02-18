@@ -18,7 +18,7 @@ class Animal(models.Model):
   breed = models.CharField(max_length=75)
   age = models.FloatField()
   created_at = models.DateTimeField(default=timezone.now, editable=False)
-  owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='animals')
+  owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='animals', null=True)
   updated_at = models.DateTimeField(auto_now=True)
   breed_group = models.CharField(max_length=100, blank=True, null=True)
   color_choices = (
@@ -61,11 +61,15 @@ class Animal(models.Model):
     ('other', 'Other'),
   )
   intake_type = models.CharField(max_length=50, blank=True, choices=intake_status_choices, null=True)
-  image = models.ImageField(upload_to=random_name, blank=True, null=True)
 
   def save(self, *args, **kwargs):
     if not self.pk:
       self.created_at = timezone.now()
     return super().save(*args, **kwargs)
 
-  
+class Image(models.Model):
+  image = models.ImageField(upload_to=random_name, blank=True, null=True)
+  animal = models.ForeignKey(Animal, on_delete=models.CASCADE, related_name='images', null=True)
+
+  def __str__(self):
+    return str(self.animal.id) + '+' + self.animal.name

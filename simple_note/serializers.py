@@ -16,4 +16,4 @@ class TagSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.ModelSerializer):
   class Meta:
     model = Contact
-    fields = ['pk', 'name']
+    fields = '__all__'

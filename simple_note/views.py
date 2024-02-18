@@ -59,6 +59,20 @@ class TagApiView(View):
     serializer = TagSerializer(tag, many=True)
     return JsonResponse({'status': 'success', 'code': 200, 'data': serializer.data}, safe=False)
 
+  def post(self, request, *args, **kwargs):
+    try:
+      token = None
+      data = json.loads(request.body)
+      user = get_user_from_token(get_token_from_request(request))
+      data['owner'] = user.data.pk
+      serializer = TagSerializer(data=data)
+      if serializer.is_valid():
+        serializer.save()
+        return JsonResponse({'status': 'success', 'code': 201, 'data': [serializer.data]}, status=201)
+      return JsonResponse({'status': 'error', 'code': 400, 'data': serializer.errors}, status=400)
+    except json.JSONDecodeError:
+      return JsonResponse({'status': 'error', 'code': 400, 'data': {'error': 'Invalid JSON'}}, status=400)
+
 class ContactApiView(View):
   @csrf_exempt
   def dispatch(self, request, *args, **kwargs):
@@ -77,3 +91,17 @@ class ContactApiView(View):
     contact = Contact.objects.filter(owner=user.data.pk)
     serializer = ContactSerializer(contact, many=True)
     return JsonResponse({'status': 'success', 'code': 200, 'data': serializer.data}, safe=False)
+
+  def post(self, request, *args, **kwargs):
+    try:
+      token = None
+      data = json.loads(request.body)
+      user = get_user_from_token(get_token_from_request(request))
+      data['owner'] = user.data.pk
+      serializer = ContactSerializer(data=data)
+      if serializer.is_valid():
+        serializer.save()
+        return JsonResponse({'status': 'success', 'code': 201, 'data': [serializer.data]}, status=201)
+      return JsonResponse({'status': 'error', 'code': 400, 'data': serializer.errors}, status=400)
+    except json.JSONDecodeError:
+      return JsonResponse({'status': 'error', 'code': 400, 'data': {'error': 'Invalid JSON'}}, status=400)

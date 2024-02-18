@@ -11,7 +11,7 @@ class Tag(models.Model):
     return self.name
 
 class Contact(models.Model):
-  owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='contact')
+  owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='contacts')
   name = models.CharField(max_length=100)
   email = models.EmailField()
 

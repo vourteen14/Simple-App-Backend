@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Animal
+from simple_catalog.models import Animal
+from simple_catalog.models import Image
 
 class AnimalAdmin(admin.ModelAdmin):
   search_fields = ['name', 'species', 'breed', 'owner__email']
@@ -11,3 +12,4 @@ class AnimalAdmin(admin.ModelAdmin):
   owner.short_description = 'Owner'
 
 admin.site.register(Animal, AnimalAdmin)
+admin.site.register(Image)
