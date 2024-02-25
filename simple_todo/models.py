@@ -20,7 +20,7 @@ class Todo(models.Model):
   ]
   
   title = models.CharField(max_length=200)
-  description = models.TextField()
+  description = models.TextField(null=True)
   status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='PL')
   created_at = models.DateTimeField(default=timezone.now, editable=False)
   owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='todos', null=True)

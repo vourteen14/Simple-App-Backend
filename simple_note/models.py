@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from simple_note.utils import random_name
+from simple_note.utils import priority_validator
 
 CustomUser = get_user_model()
 
@@ -31,7 +32,7 @@ class Note(models.Model):
     ('shared', 'Shared'),
   )
   visibility = models.CharField(choices=visibility_choices, default='private', max_length=20)
-  priority = models.IntegerField(default=0)
+  priority = models.IntegerField(default=0, validators=[priority_validator])
   related_contacts = models.ManyToManyField(Contact)
 
   def __str__(self):
