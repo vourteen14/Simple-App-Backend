@@ -1,7 +1,13 @@
 from rest_framework import serializers
-from .models import Todo
+from simple_todo.models import Todo
+from simple_todo.models import Tag
 
-class YourModelSerializer(serializers.ModelSerializer):
+class TodoSerializer(serializers.ModelSerializer):
   class Meta:
     model = Todo
     fields = '__all__'
+
+class TagSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Tag
+    fields = ['tag']

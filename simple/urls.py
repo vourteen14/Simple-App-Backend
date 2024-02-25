@@ -6,4 +6,5 @@ urlpatterns = [
   path('api/', include('simple_user.urls')),
   path('api/', include('simple_catalog.urls')),
   path('api/', include('simple_note.urls')),
+  path('api/', include('simple_todo.urls')),
 ]

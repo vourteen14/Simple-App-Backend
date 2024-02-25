@@ -5,10 +5,16 @@ from django.contrib.auth import get_user_model
 CustomUser = get_user_model()
 
 class Tag(models.Model):
-  name = models.CharField(max_length=50)
-
+  tag = models.CharField(max_length=50)
+  created_at = models.DateTimeField(default=timezone.now, editable=False)
+  
   def __str__(self):
-    return self.name
+    return self.tag
+
+  def save(self, *args, **kwargs):
+    if not self.pk:
+      self.created_at = timezone.now()
+    return super().save(*args, **kwargs)
 
 class Todo(models.Model):
   STATUS_CHOICES = [
