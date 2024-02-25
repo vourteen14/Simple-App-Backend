@@ -1,5 +1,6 @@
 dev.runserver.sh
 dev.makemigrations.sh
+dev.squashmigrations.sh
 dev.migrate.sh
 dev.showmigrations.sh
 dev.createsuperuser.sh
