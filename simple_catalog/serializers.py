@@ -7,6 +7,11 @@ class ImageSerializer(serializers.ModelSerializer):
     model = Image
     fields = '__all__'
 
+class ImageSerializerAnimal(serializers.ModelSerializer):
+  class Meta:
+    model = Image
+    fields = ['id', 'animal']
+
 class AnimalSerializer(serializers.ModelSerializer):
   image = ImageSerializer(many=True, source='images', read_only=True)
 

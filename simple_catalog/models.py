@@ -68,15 +68,8 @@ class Animal(models.Model):
       self.created_at = timezone.now()
     return super().save(*args, **kwargs)
 
-  def __str__(self):
-    return str(self.id) + '+' + self.name
-
 class Image(models.Model):
   image = models.ImageField(upload_to=random_name, blank=True, null=True)
   animal = models.ForeignKey(Animal, on_delete=models.CASCADE, related_name='images', null=True)
-  owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='owners')
+  owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='owners', null=True)
   created_at = models.DateTimeField(auto_now_add=True, null=True)
-
-  def __str__(self):
-    rand = uuid.uuid4()
-    return str(rand)[:8]

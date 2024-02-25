@@ -13,6 +13,7 @@ from simple_catalog.models import Animal
 from simple_catalog.models import Image
 from simple_catalog.serializers import AnimalSerializer
 from simple_catalog.serializers import ImageSerializer
+from simple_catalog.serializers import ImageSerializerAnimal
 from simple_catalog.counters import AnimalCounter
 
 class ImageApiView(View):
@@ -74,16 +75,18 @@ class AnimalApiView(View):
       serializer.initial_data['owner'] = user.data.pk
       if serializer.is_valid():
         serializer.save()
-        if serializer.initial_data.get('images'):
-          for id in serializer.initial_data.get('images'):
-            image = Image.objects.filter(id=id)
-            image_serializer = ImageSerializer(data=image)
-            image_serializer.owner = serializer.data.get('id')
-            if image_serializer.is_valid():
-              image_serializer.save()
+        animal_instance = Animal.objects.get(id=serializer.data.get('id'))
+        for img_id in serializer.initial_data.get('images'):
+          img = Image.objects.get(id=img_id)
+          img_data = ImageSerializerAnimal(data=img)
+          img_serializer = ImageSerializerAnimal(data={'id': img_id, 'animal': animal_instance.id})
+          if img_serializer.is_valid():
+            img_serializer.update(img, img_serializer.validated_data)
+          else:
+            print(img_serializer.errors)
         counter = AnimalCounter()
         counter.increase_animal_count(user.data.pk)
-        return JsonResponse({'status': 'success', 'code': 201, 'data': [serializer.data]}, status=201)
+        return JsonResponse({'status': 'success', 'code': 201, 'data': serializer.data}, status=201)
       return JsonResponse({'status': 'error', 'code': 400, 'data': serializer.errors}, status=400)
     except json.JSONDecodeError:
       return JsonResponse({'status': 'error', 'code': 400, 'data': {'error': 'Invalid JSON'}}, status=400)
