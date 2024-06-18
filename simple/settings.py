@@ -5,7 +5,8 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q=dn3pt1lkp*^!fkntp)@@#a07#b_+dr__rg8fb^2uvvit185_'
 DEBUG = True
-ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
+HOSTS = os.environ.get('ALLOWED_HOSTS', '')
+ALLOWED_HOSTS = HOSTS.split(',') if HOSTS else []
 INSTALLED_APPS = [
   'django.contrib.admin',
   'django.contrib.auth',

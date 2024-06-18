@@ -1,3 +1,4 @@
+.env
 dev.runserver.sh
 dev.makemigrations.sh
 dev.squashmigrations.sh

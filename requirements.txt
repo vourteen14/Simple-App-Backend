@@ -1,6 +1,8 @@
 Django
 djangorestframework
 psycopg2
+Pillow
+pymongo
 redis
 djangorestframework
 djangorestframework-simplejwt
