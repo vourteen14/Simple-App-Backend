@@ -5,7 +5,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q=dn3pt1lkp*^!fkntp)@@#a07#b_+dr__rg8fb^2uvvit185_'
 DEBUG = True
-ALLOWED_HOSTS = ['10.1.0.10']
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
 INSTALLED_APPS = [
   'django.contrib.admin',
   'django.contrib.auth',
@@ -53,11 +53,11 @@ WSGI_APPLICATION = 'simple.wsgi.application'
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': os.environ.get('DB_NAME'),
-    'USER': os.environ.get('DB_USER'),
-    'PASSWORD': os.environ.get('DB_PASSWORD'),
-    'HOST': os.environ.get('DB_HOST'),
-    'PORT': os.environ.get('DB_PORT'),
+    'NAME': os.environ.get('DATABASE_NAME'),
+    'USER': os.environ.get('DATABASE_USER'),
+    'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+    'HOST': os.environ.get('DATABASE_HOST'),
+    'PORT': os.environ.get('DATABASE_PORT'),
   }
 }
 
@@ -84,10 +84,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'simple_user.CustomUser'
 
-AWS_ACCESS_KEY_ID = os.environ.get('MINIO_STORAGE_ACCESS_KEY')
-AWS_SECRET_ACCESS_KEY = os.environ.get('MINIO_STORAGE_SECRET_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('MINIO_STORAGE_BUCKET_NAME')
-AWS_S3_ENDPOINT_URL = os.environ.get('MINIO_STORAGE_ENDPOINT')
+AWS_ACCESS_KEY_ID = os.environ.get('MINIO_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = os.environ.get('MINIO_SECRET_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('MINIO_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = os.environ.get('MINIO_ENDPOINT')
 AWS_S3_SECURE_URLS = False
 
 STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/static/"
@@ -105,7 +105,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MONGO_URI = os.environ.get('MONGO_URI')
+MONGO_URI = os.environ.get('DATABASE_MONGODB_URI')
 
 SIMPLE_JWT = {
   'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
