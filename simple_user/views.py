@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework.decorators import api_view
+from .utils import send_activation_email
 from .serializers import CustomUserSerializer
 from .models import CustomUser
 
@@ -14,7 +15,9 @@ def register_user(request):
       user = serializer.save()
       activation_link = user.generate_activation_link()
       serialized_data = serializer.data
-      serialized_data['activation_link'] = activation_link
+      user_email = serialized_data.get('email', None)
+      send_activation_email(user_email, activation_link)
+
       return JsonResponse({'status': 'success', 'code': 201, 'data': serialized_data}, status=201)
     return JsonResponse({'status': 'error', 'code': 400, 'data': serializer.errors}, status=400)
 

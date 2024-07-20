@@ -5,7 +5,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q=dn3pt1lkp*^!fkntp)@@#a07#b_+dr__rg8fb^2uvvit185_'
 DEBUG = True
-HOSTS = os.environ.get('ALLOWED_HOSTS', '')
+HOSTS = os.getenv('ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = HOSTS.split(',') if HOSTS else []
 INSTALLED_APPS = [
   'django.contrib.admin',
@@ -15,6 +15,8 @@ INSTALLED_APPS = [
   'django.contrib.messages',
   'django.contrib.staticfiles',
   'rest_framework',
+  'django_rename_app',
+  'django_mailjet',
   'simple_user',
   'simple_catalog',
   'simple_todo',
@@ -30,6 +32,8 @@ MIDDLEWARE = [
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS]
 
 ROOT_URLCONF = 'simple.urls'
 
@@ -54,11 +58,11 @@ WSGI_APPLICATION = 'simple.wsgi.application'
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': os.environ.get('DATABASE_NAME'),
-    'USER': os.environ.get('DATABASE_USER'),
-    'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-    'HOST': os.environ.get('DATABASE_HOST'),
-    'PORT': os.environ.get('DATABASE_PORT'),
+    'NAME': os.getenv('DATABASE_NAME'),
+    'USER': os.getenv('DATABASE_USER'),
+    'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+    'HOST': os.getenv('DATABASE_HOST'),
+    'PORT': os.getenv('DATABASE_PORT'),
   }
 }
 
@@ -85,10 +89,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'simple_user.CustomUser'
 
-AWS_ACCESS_KEY_ID = os.environ.get('MINIO_ACCESS_KEY')
-AWS_SECRET_ACCESS_KEY = os.environ.get('MINIO_SECRET_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('MINIO_BUCKET_NAME')
-AWS_S3_ENDPOINT_URL = os.environ.get('MINIO_ENDPOINT')
+MAILJET_API_KEY = os.getenv('MAILJET_ACCESS_KEY')
+MAILJET_API_SECRET = os.getenv('MAILJET_SECRET_KEY')
+EMAIL_BACKEND = 'django_mailjet.backends.MailjetBackend'
+DEFAULT_FROM_EMAIL = os.getenv('MAILJET_DEFAULT_EMAIL')
+
+AWS_ACCESS_KEY_ID = os.getenv('MINIO_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = os.getenv('MINIO_SECRET_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = os.getenv('MINIO_ENDPOINT')
 AWS_S3_SECURE_URLS = False
 
 STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/static/"
@@ -106,7 +115,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MONGO_URI = os.environ.get('DATABASE_MONGODB_URI')
+MONGO_URI = os.getenv('DATABASE_MONGODB_URI')
 
 SIMPLE_JWT = {
   'ACCESS_TOKEN_LIFETIME': timedelta(days=7),

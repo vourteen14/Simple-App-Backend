@@ -1,0 +1,31 @@
+name: Check Release and Execute Steps
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  check-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set release tag
+        id: set_release_tag
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            echo "exists=true" >> $GITHUB_ENV
+          else
+            echo "exists=false" >> $GITHUB_ENV
+          fi
+
+      - name: Display release status
+        run: echo "Release exists: ${{ env.exists }}"
+
+      - name: Execute if release exists
+        if: ${{ env.exists == 'true' }}
+        run: echo "Release tag is ${{ env.RELEASE_TAG }}. Executing steps..."

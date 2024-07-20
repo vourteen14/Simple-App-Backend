@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from simple_user.utils import random_name
 from datetime import timedelta
@@ -62,7 +63,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     self.save()
 
   def generate_activation_link(self):
-    return f"http://10.1.0.10:34515/api/auth/activate/{self.activation_token}/"
+    domain = settings.CSRF_TRUSTED_ORIGINS[0]
+    return f"{domain}/api/auth/activate/{self.activation_token}/"
 
   def save(self, *args, **kwargs):
     if self.is_active and not self.is_activation_token_expired():

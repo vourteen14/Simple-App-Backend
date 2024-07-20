@@ -1,6 +1,6 @@
 Django
 djangorestframework
-psycopg2
+psycopg2-binary
 Pillow
 pymongo
 redis
@@ -8,4 +8,8 @@ djangorestframework
 djangorestframework-simplejwt
 django-rest-framework-social-oauth2
 social-auth-app-django
-
+django-storages
+boto3
+django-cors-headers
+django-mailjet
+django-rename-app
